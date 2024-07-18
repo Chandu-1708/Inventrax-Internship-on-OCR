@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+<head>
+    <title>Invoice</title>
+</head>
+<body>
+    <h2>Select a file to upload</h2>
+
+    <form method="post" action="/home" enctype="multipart/form-data">
+        <p>
+            <input type="file" name="file" autocomplete="off" required>
+        </p>
+        <p>
+            <input type="submit" value="Submit">
+        </p>
+    </form>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+
+    {% if df is not none and not df.empty %}
+        <h2>Table extracted from the image:</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    {% for col in df.columns %}
+                        <th>{{ col }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for index, row in df.iterrows() %}
+                    <tr>
+                        {% for col in df.columns %}
+                            <td>{{ row[col] }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <form method="post" action="/download_json">
+            <input type="hidden" name="data" value="{{ df.to_json(orient='records') }}">
+            <input type="checkbox" name="download" id="download">
+            <label for="download">Download JSON</label>
+            <p><input type="submit" value="Submit"></p>
+        </form>
+    {% else %}
+        <p>No data available.</p>
+    {% endif %}
+</body>
+</html>

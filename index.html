@@ -1,0 +1,97 @@
+<!doctype html>
+<html>
+<head>
+    <title>Invoice</title>
+</head>
+<body>
+    <h2>Select a file to upload</h2>
+
+    <form method="post" action="/home" enctype="multipart/form-data">
+        <p>
+            <input type="file" name="file" autocomplete="off" required>
+        </p>
+        <p>
+            <input type="submit" value="Submit">
+        </p>
+    </form>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+
+    {% if df is not none and not df.empty %}
+        <h2>Table extracted from the image:</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>HSN Code</th>
+                    <th>MRP</th>
+                    <th>FC</th>
+                    <th>FB</th>
+                    <th>Rate</th>
+                    <th>.Amt</th>
+                    <th>Disc.amt</th>
+                    <th>Taxable value</th>
+                    <th>cost %</th>
+                    <th>cost Amt</th>
+                    <th>sgst %</th>
+                    <th>sgst Amt</th>
+                    <th>cess %</th>
+                    <th>cess Amt</th>
+                    <th>Total</th>
+                    <th>Invoice No</th>
+                    <th>Invoice Date</th>
+                    <th>GSTIN</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for index, row in df.iterrows() %}
+                    <tr>
+                        <td>{{ row['product'] }}</td>
+                        <td>{{ row['HSN Code'] }}</td>
+                        <td>{{ row['MRP'] }}</td>
+                        <td>{{ row['FC'] }}</td>
+                        <td>{{ row['FB'] }}</td>
+                        <td>{{ row['Rate'] }}</td>
+                        <td>{{ row['.Amt'] }}</td>
+                        <td>{{ row['Disc.amt'] }}</td>
+                        <td>{{ row['Taxable value'] }}</td>
+                        <td>{{ row['cost %'] }}</td>
+                        <td>{{ row['cost Amt'] }}</td>
+                        <td>{{ row['sgst %'] }}</td>
+                        <td>{{ row['sgst Amt'] }}</td>
+                        <td>{{ row['cess %'] }}</td>
+                        <td>{{ row['cess Amt'] }}</td>
+                        <td>{{ row['Total'] }}</td>
+                        <td>{{ row['Invoice No'] }}</td>
+                        <td>{{ row['Invoice Date'] }}</td>
+                        <td>{{row['GSTIN']}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <br>
+        <form method="post" action="/download_json">
+            <input type="hidden" name="data" value="{{ df.to_json(orient='records') }}">
+            <input type="checkbox" name="download" id="download">
+            <label for="download">Download JSON</label>
+            <p><input type="submit" value="Submit"></p>
+        </form>
+    {% else %}
+        <p>No data available.</p>
+    {% endif %}
+</body>
+</html>
